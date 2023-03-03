@@ -1,8 +1,7 @@
 # python3.8.5
-opencv-python
-numpy
+#opencv-python
+#numpy
 kivy==2.0.0
 playsound==1.2.2
-tensorflow==2.9.1
-csv
+#tensorflow==2.9.1
 piexif
