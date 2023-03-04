@@ -168,18 +168,28 @@ class CameraScreen(Screen):
         model_name = "./vending_5class_ResNet50V2_30epoch_avg.tflite"
         self.model = tfliteDetect(model_name)
         # self.model.predict()
-        # Add FancyButton widget
-        fancy_button = FancyButton(text='Chụp hình')
-        fancy_button.size_hint = (None, None)
-        fancy_button.size = (200, 50)
-        fancy_button.pos_hint = {'center_x': 0.8, 'y': 0.25}
-        fancy_button.bind(on_press=self.detectImage)
-        layout.add_widget(fancy_button)
+
         self.add_widget(layout)
-        
+        # config serial port
 
-        
+        self.ser = serial.Serial(port="COM7",baudrate=9600, timeout=0.1)
 
+        # read data from senesor
+        Clock.schedule_interval(self.getSensor, 0.1)
+
+    # check data from sensor and detect image
+    def getSensor(self, *args):
+        self.ser.flush()
+        self.ser.flushInput()
+        self.ser.flushOutput()
+        if self.checkSensor == True:
+            x = self.ser.readline()
+            self.ser.flush()
+            print(x)
+            data = x[:-2].decode("utf-8")
+            if data == "0":
+                self.checkSensor = False
+                Clock.schedule_once(self.detectImage, 1)
     def update_rect(self, *args):
         self.rect.pos = self.pos
         self.rect.size = self.size
