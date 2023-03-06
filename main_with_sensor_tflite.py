@@ -55,6 +55,9 @@ LIST_CLASSES = ['Alu', 'Foam_box', 'Milk_box', 'PET', 'Plastic_cup', 'Undentifie
 FRAME_H_SCALE = 0.4
 FRAME_W_SCALE = FRAME_H_SCALE*9/16
 
+
+
+
 FRAME_X_CENTER = 0.225
 FRAME_Y = 0.1
 

@@ -494,7 +494,6 @@ class MyScreen(Screen):
         if self.manager is not None:
             self.manager.current = 'camera_screen'
 
-
 # init app 
 class MyApp(App):
     def __init__(self, **kwargs):

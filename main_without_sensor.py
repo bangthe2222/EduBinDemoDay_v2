@@ -26,8 +26,10 @@ import numpy as np
 import csv
 import piexif
 from kivy.core.window import Window
-Window.size = (720, 405)
 
+# Window.size = (720, 405)
+Window.fullscreen = 'auto'
+# Window.borderless = True
 Builder.load_string('''
 <FancyButton>:
     background_normal: ''
@@ -47,6 +49,9 @@ LIST_CLASSES = ['Alu', 'Foam_box', 'Milk_box', 'PET', 'Plastic_cup', 'Undentifie
 
 FRAME_H_SCALE = 0.4
 FRAME_W_SCALE = FRAME_H_SCALE*9/16
+
+FRAME_H_SCALE_MAIN = 1
+FRAME_W_SCALE_MAIN = 1
 
 FRAME_X_CENTER = 0.225
 FRAME_Y = 0.1
@@ -119,6 +124,7 @@ class CameraScreen(Screen):
         layout = FloatLayout()
 
         # Tạo Widget hiển thị hình nền
+        self.canvas.clear()
         with layout.canvas:
             # Load the image and create a texture from it
             img = Image('./images/screen_main.png').texture
@@ -133,8 +139,8 @@ class CameraScreen(Screen):
         # tạo camera capture và widget camera
         self.cap = cv2.VideoCapture(0)
         camera_widget = CameraWidget(capture=self.cap)
-        camera_widget.size_hint = (FRAME_W_SCALE, FRAME_H_SCALE)
-        camera_widget.pos_hint =  {'center_x': 0.5, 'y': 0.05}
+        camera_widget.size_hint = (FRAME_W_SCALE_MAIN, FRAME_H_SCALE_MAIN)
+        camera_widget.pos_hint =  {'x': 0, 'y': 0}
         layout.add_widget(camera_widget)
 
         # bắt đầu cập nhật khung hình camera
@@ -272,14 +278,16 @@ class CameraScreen(Screen):
     def play_sound_Undentifided(self, path):
         playsound.playsound("./voice/intro.mp3")
         playsound.playsound("./voice/voice_undentified.mp3")
+
 # ALU screen
-class screenALU(Screen):
-    def __init__(self, **kwargs):
+class screenDetect(Screen):
+    def __init__(self, path_image, **kwargs):
         super().__init__(**kwargs)
         self.layout = BoxLayout(orientation='vertical')
+        self.canvas.clear()
         with self.canvas:
             # Load the image and create a texture from it
-            img = Image('./images/screen_ALU.png').texture
+            img = Image(path_image).texture
             # Create a Rectangle object with the texture as its source
             self.rect = Rectangle(texture=img, pos=self.pos, size=self.size)
         # Bind the texture and size properties of the Rectangle object
@@ -293,110 +301,17 @@ class screenALU(Screen):
 
     def update_detect_img(self, dt):
         global PATH_DETECT_IMAGE
-        self.small_img = KvImage(source=PATH_DETECT_IMAGE, size_hint=(FRAME_W_SCALE, FRAME_H_SCALE), allow_stretch = True, keep_ratio = False)
-        self.small_img.pos_hint = {'center_x': FRAME_X_CENTER, 'y': FRAME_Y}
-        self.add_widget(self.small_img)
-# FOAM screen
-class screenFOAM(Screen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.layout = BoxLayout(orientation='vertical')
-        with self.canvas:
-            # Load the image and create a texture from it
-            img = Image('./images/screen_FOAM.png').texture
-            # Create a Rectangle object with the texture as its source
-            self.rect = Rectangle(texture=img, pos=self.pos, size=self.size)
-        # Bind the texture and size properties of the Rectangle object
-        # to the corresponding properties of the widget
-        self.bind(pos=self.update_rect, size=self.update_rect)
-        Clock.schedule_interval(self.update_detect_img, 0.5)
-
-    def update_rect(self, *args):
-        self.rect.pos = self.pos
-        self.rect.size = self.size
-    def update_detect_img(self, dt):
-        global PATH_DETECT_IMAGE
-        self.small_img = KvImage(source=PATH_DETECT_IMAGE, size_hint=(FRAME_W_SCALE, FRAME_H_SCALE), allow_stretch = True, keep_ratio = False)
-        self.small_img.pos_hint = {'center_x': FRAME_X_CENTER, 'y': FRAME_Y}
-        self.add_widget(self.small_img)
-# MILKBOX screen
-class screenMILKBOX(Screen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.layout = BoxLayout(orientation='vertical')
-        with self.canvas:
-            # Load the image and create a texture from it
-            img = Image('./images/screen_MILKBOX.png').texture
-            # Create a Rectangle object with the texture as its source
-            self.rect = Rectangle(texture=img, pos=self.pos, size=self.size)
-        # Bind the texture and size properties of the Rectangle object
-
-        # to the corresponding properties of the widget
-        self.bind(pos=self.update_rect, size=self.update_rect)
-        Clock.schedule_interval(self.update_detect_img, 0.5)
-        
-    def update_rect(self, *args):
-        self.rect.pos = self.pos
-        self.rect.size = self.size
-
-    def update_detect_img(self, dt):
-        global PATH_DETECT_IMAGE
+        self.clear_widgets()
         self.small_img = KvImage(source=PATH_DETECT_IMAGE, size_hint=(FRAME_W_SCALE, FRAME_H_SCALE), allow_stretch = True, keep_ratio = False)
         self.small_img.pos_hint = {'center_x': FRAME_X_CENTER, 'y': FRAME_Y}
         self.add_widget(self.small_img)
 
-# PET screen
-class screenPET(Screen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.layout = BoxLayout(orientation='vertical')
-        with self.canvas:
-            # Load the image and create a texture from it
-            img = Image('./images/screen_PET.png').texture
-            # Create a Rectangle object with the texture as its source
-            self.rect = Rectangle(texture=img, pos=self.pos, size=self.size)
-        # Bind the texture and size properties of the Rectangle object
-        # to the corresponding properties of the widget
-        self.bind(pos=self.update_rect, size=self.update_rect)
-        Clock.schedule_interval(self.update_detect_img, 0.5)
-    def update_rect(self, *args):
-        self.rect.pos = self.pos
-        self.rect.size = self.size
-
-    def update_detect_img(self, dt):
-        global PATH_DETECT_IMAGE
-        self.small_img = KvImage(source=PATH_DETECT_IMAGE, size_hint=(FRAME_W_SCALE, FRAME_H_SCALE), allow_stretch = True, keep_ratio = False)
-        self.small_img.pos_hint = {'center_x': FRAME_X_CENTER, 'y': FRAME_Y}
-        self.add_widget(self.small_img)
-
-# UNKNOW object sreen
-class screenUnidentified(Screen):
-    def __init__(self, **kwargs):
-        super().__init__(**kwargs)
-        self.layout = BoxLayout(orientation='vertical')
-        with self.canvas:
-            # Load the image and create a texture from it
-            img = Image('./images/screen_undentified.png').texture
-            # Create a Rectangle object with the texture as its source
-            self.rect = Rectangle(texture=img, pos=self.pos, size=self.size)
-        # Bind the texture and size properties of the Rectangle object
-        # to the corresponding properties of the widget
-        self.bind(pos=self.update_rect, size=self.update_rect)
-        Clock.schedule_interval(self.update_detect_img, 0.5)
-
-    def update_rect(self, *args):
-        self.rect.pos = self.pos
-        self.rect.size = self.size
-    def update_detect_img(self, dt):
-        global PATH_DETECT_IMAGE
-        self.small_img = KvImage(source=PATH_DETECT_IMAGE, size_hint=(FRAME_W_SCALE, FRAME_H_SCALE),allow_stretch = True ,keep_ratio = False)
-        self.small_img.pos_hint = {'center_x': FRAME_X_CENTER, 'y': FRAME_Y}
-        self.add_widget(self.small_img)
 # intro sreen
 class MyScreen(Screen):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.layout = BoxLayout(orientation='vertical')
+        self.canvas.clear()
         with self.canvas:
             # Load the image and create a texture from it
             img = Image('./images/screen_intro.png').texture
@@ -459,11 +374,11 @@ class MyApp(App):
         sm = ScreenManager(transition=WipeTransition())
         sm.add_widget(MyScreen(name='my_screen'))
         sm.add_widget(CameraScreen(name='camera_screen'))
-        sm.add_widget(screenMILKBOX(name='screen_MILKBOX'))
-        sm.add_widget(screenALU(name='screen_ALU'))
-        sm.add_widget(screenPET(name='screen_PET'))
-        sm.add_widget(screenFOAM(name='screen_FOAM'))
-        sm.add_widget(screenUnidentified(name='screen_Unidentified'))
+        sm.add_widget(screenDetect(path_image="./images/screen_MILKBOX.png",name='screen_MILKBOX'))
+        sm.add_widget(screenDetect(path_image="./images/screen_ALU.png",name='screen_ALU'))
+        sm.add_widget(screenDetect(path_image="./images/screen_PET.png",name='screen_PET'))
+        sm.add_widget(screenDetect(path_image="./images/screen_FOAM.png",name='screen_FOAM'))
+        sm.add_widget(screenDetect(path_image="./images/screen_Undentified.png",name='screen_Unidentified'))
         return sm
 
 

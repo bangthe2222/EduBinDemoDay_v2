@@ -5,3 +5,4 @@ kivy==2.0.0
 playsound==1.2.2
 #tensorflow==2.9.1
 piexif
+pygame

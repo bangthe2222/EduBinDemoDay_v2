@@ -3,4 +3,5 @@ images_data
 detect_image
 edit_final
 /vending_5class_ResNet50V2_30epoch_avg.h5
-/vending_5class_ResNet50V2_30epoch_avg_float32.tflite
+/vending_5class_ResNet50V2_30epoch_avg.tflite
+/note.txt
