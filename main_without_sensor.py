@@ -50,8 +50,8 @@ LIST_CLASSES = ['Alu', 'Foam_box', 'Milk_box', 'PET', 'Plastic_cup', 'Undentifie
 FRAME_H_SCALE = 0.4
 FRAME_W_SCALE = FRAME_H_SCALE*9/16
 
-FRAME_H_SCALE_MAIN = 1
-FRAME_W_SCALE_MAIN = 1
+FRAME_H_SCALE_MAIN = 0.8
+FRAME_W_SCALE_MAIN = FRAME_H_SCALE_MAIN*9/16
 
 FRAME_X_CENTER = 0.225
 FRAME_Y = 0.1
@@ -140,7 +140,7 @@ class CameraScreen(Screen):
         self.cap = cv2.VideoCapture(0)
         camera_widget = CameraWidget(capture=self.cap)
         camera_widget.size_hint = (FRAME_W_SCALE_MAIN, FRAME_H_SCALE_MAIN)
-        camera_widget.pos_hint =  {'x': 0, 'y': 0}
+        camera_widget.pos_hint =  {'x': 0.285, 'y': 0.1}
         layout.add_widget(camera_widget)
 
         # bắt đầu cập nhật khung hình camera
